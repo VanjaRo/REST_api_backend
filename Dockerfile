@@ -9,6 +9,7 @@ RUN apt install -y python3-pip
 RUN pip3 install -r /app/requirements.txt
 
 RUN chmod +x /app/docker-entrypoint.sh
+ENV FLASK_APP main.py
 
 EXPOSE 8080
 
