@@ -49,10 +49,10 @@ class CourierPostSchema(ma.Schema):
 
 # Courier patch request Schema (for validation)
 class CourierPatchSchema(ma.Schema):
-    courier_type = ma.Str()
-    regions = ma.List(ma.Int)
-    working_hours = ma.List(ma.Str, validate=validate.OneOf(
+    courier_type = ma.Str(validate=validate.OneOf(
         ['foot', 'bike', 'car']))
+    regions = ma.List(ma.Int)
+    working_hours = ma.List(ma.Str)
 
 
 # Order post request Schema (for validation)
