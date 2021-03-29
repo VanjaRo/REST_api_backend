@@ -100,6 +100,7 @@ def get_courier(courier_id):
 @app.route('/courier/<int:courier_id>', methods=['PATCH'])
 def patch_couriers(courier_id):
     courier = m.Courier.query.get(courier_id)
+
     fields = request.json
     try:
         validate = shem.courier_patch_schema.validate(courier)
@@ -133,8 +134,12 @@ def patch_couriers(courier_id):
             working_hours_to_patch.append(actual_working_hour)
         courier.working_hours = working_hours_to_patch
 
+    courier_dump = shem.courier_schema.dump(courier)
+    for el in range(len(courier_dump['working_hours'])):
+        courier_dump['working_hours'][el] = services.seconds_to_hours(
+            courier_dump['working_hours'][el])
     db.session.commit()
-    return shem.courier_schema.jsonify(courier)
+    return jsonify(courier_dump), 200
 
 
 @app.route('/orders', methods=['POST'])
