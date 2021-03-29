@@ -27,11 +27,9 @@ def add_couriers():
     err_couriers_ids_list = []
     flag = False
     for courier in data:
-        try:
-            validated = shem.courier_post_schema.validate(courier)
-        except ValidationError as err:
-            err_couriers_ids_list.append(courier['courier_id'])
-            print(err.messages)
+        validated = shem.courier_post_schema.validate(courier)
+        if len(validated) != 0:
+            err_couriers_ids_list.append({'id': courier['courier_id']})
             flag = True
             continue
         if flag:
@@ -100,11 +98,10 @@ def get_courier(courier_id):
 @app.route('/courier/<int:courier_id>', methods=['PATCH'])
 def patch_couriers(courier_id):
     courier = m.Courier.query.get(courier_id)
-
     fields = request.json
-    try:
-        validate = shem.courier_patch_schema.validate(courier)
-    except:
+    validated = shem.courier_patch_schema.validate(courier)
+    if len(validated) != 0:
+        print(validated)
         return {}, 400
     if 'regions' in fields:
         regions = fields['regions']
@@ -146,14 +143,13 @@ def patch_couriers(courier_id):
 def post_orders():
     data = request.json['data']
     orders_ids_list = []
-    flag = False
     err_orders_ids_list = []
+    flag = False
     for order in data:
-        try:
-            validated = shem.oreder_post_schema.validate(order)
-        except ValidationError as err:
-            err_orders_ids_list.append(order['order_id'])
-            print(err.messages)
+        validated = shem.oreder_post_schema.validate(order)
+        if len(validated) != 0:
+            err_orders_ids_list.append({"id": order['order_id']})
+            print(validated)
             flag = True
             continue
         if flag:
@@ -209,8 +205,7 @@ def assign_orders():
                 free_weight -= order['weight']
 
     old_assign_time = courier_dump['assign_time']
-    new_assign_time = datetime.datetime.utcnow().replace(
-        microsecond=0).isoformat() + 'Z'
+    new_assign_time = datetime.datetime.utcnow().isoformat() + 'Z'
     assign_time = new_assign_time
     if old_assign_time != None:
         old_assign_time_sec = services.rfc_to_seconds(old_assign_time)
@@ -271,6 +266,7 @@ def complete_order():
 
     return {'order_id': order_req.order_id}, 200
 
+
     # Run server
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=8080)
+    app.run(debug=True, host='0.0.0.0', port=8080)

@@ -1,6 +1,6 @@
 from app_init import ma
 import models as m
-from marshmallow import ValidationError
+from marshmallow import ValidationError, validate
 import services as serv
 
 
@@ -40,7 +40,8 @@ class CourierToRegionSchema(ma.SQLAlchemySchema):
 # Courier post request Schema (for validation)
 class CourierPostSchema(ma.Schema):
     courier_id = ma.Int(required=True)
-    courier_type = ma.Str(required=True)
+    courier_type = ma.Str(validate=validate.OneOf(
+        ['foot', 'bike', 'car']), required=True)
     regions = ma.List(ma.Int, required=True)
     working_hours = ma.List(
         ma.Str, required=True)
@@ -50,7 +51,8 @@ class CourierPostSchema(ma.Schema):
 class CourierPatchSchema(ma.Schema):
     courier_type = ma.Str()
     regions = ma.List(ma.Int)
-    working_hours = ma.List(ma.Str)
+    working_hours = ma.List(ma.Str, validate=validate.OneOf(
+        ['foot', 'bike', 'car']))
 
 
 # Order post request Schema (for validation)
