@@ -51,5 +51,5 @@ flask db init && flask db migrate && flask db upgrade
 Run the Flask web server.
 
 ```bash
-python main.py
+gunicorn --workers 4 --bind 0.0.0.0:8080 main:app
 ```
