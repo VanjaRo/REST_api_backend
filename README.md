@@ -17,7 +17,7 @@ docker build -t rest_api
 And run it:
 
 ```bash
-docker run --rm -dp 8080:8080 rest_api
+docker run --restart=always -dp 8080:8080 rest_api
 ```
 
 You can access the aplication using local_ip_adress:8080.
