@@ -89,8 +89,8 @@ def get_courier(courier_id):
         courier_dump['working_hours'][el] = services.seconds_to_hours(
             courier_dump['working_hours'][el])
     earnings = delivered * 500 * salary_coefficient
-    rating = (60*60 - min(min_mean_time, 60*60))/(60*60) * 5
-    if rating != None:
+    if min_mean_time != None:
+        rating = (60*60 - min(min_mean_time, 60*60))/(60*60) * 5
         courier_dump['rating'] = rating
     courier_dump['earnings'] = earnings
 
@@ -108,10 +108,10 @@ def patch_couriers(courier_id):
     if 'regions' in fields:
         regions = fields['regions']
         regions_to_patch = []
-        for region in regions:
-            actual_region = db.session.query(m.CourierToRegion).get(region)
+        for region_num in regions:
+            actual_region = db.session.query(m.CourierToRegion).get(region_num)
             if not actual_region:
-                actual_region = m.CourierToRegion(region=actual_region)
+                actual_region = m.CourierToRegion(region=region_num)
                 actual_region.couriers.append(courier)
                 db.session.add(actual_region)
             regions_to_patch.append(actual_region)
@@ -124,7 +124,7 @@ def patch_couriers(courier_id):
         working_hours_to_patch = []
         for working_hour in working_hours:
             actual_working_hour = db.session.query(m.CourierToWorkingHours).filter(
-                m.CourierToWorkingHours.working_hours == working_hour, m.CourierToWorkingHours.courier_id == courier.courier_id)[0]
+                m.CourierToWorkingHours.working_hours == working_hour, m.CourierToWorkingHours.courier_id == courier.courier_id).all()
             if not actual_working_hour:
                 working_hour = services.hours_to_seconds(working_hour)
                 actual_working_hour = m.CourierToWorkingHours(
