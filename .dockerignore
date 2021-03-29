@@ -19,3 +19,5 @@ docs/_build/
 __pycache__/
 migrations
 db.sqlite
+assignment*
+README*
