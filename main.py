@@ -81,7 +81,7 @@ def get_courier(courier_id):
     for region in regions_to_seconds_dump:
         mean_time = region['sum_time'] / region['orders_amount']
         delivered += region['orders_amount']
-        if min_mean_time == None or mean < min_mean_time:
+        if min_mean_time == None or mean_time < min_mean_time:
             min_mean_time = mean_time
     for el in range(len(courier_dump['working_hours'])):
         courier_dump['working_hours'][el] = services.seconds_to_hours(
@@ -249,7 +249,6 @@ def complete_order():
     order_req.completed = True
 
     seconds_passed = complete_time - courier_req.prev_delivery_end
-
     region_seconds_req = db.session.query(
         m.RegionToSeconds).get(order_req.region)
     if not region_seconds_req:
@@ -257,7 +256,7 @@ def complete_order():
             region=order_req.region, sum_time=0, orders_amount=0, courier=courier_req)
 
         db.session.add(region_seconds_req)
-    region_seconds_req.sum_time += complete_time
+    region_seconds_req.sum_time += seconds_passed
     region_seconds_req.orders_amount += 1
 
     courier_req.prev_delivery_end = complete_time
@@ -269,4 +268,4 @@ def complete_order():
 
     # Run server
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8080)
+    app.run(debug=False, host='0.0.0.0', port=8080)
