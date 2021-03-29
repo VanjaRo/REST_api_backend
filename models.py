@@ -25,8 +25,6 @@ class Courier(db.Model):
     working_hours = db.relationship(
         'CourierToWorkingHours', cascade='delete, delete-orphan', back_populates='courier')
     orders = db.relationship('Order', back_populates='courier')
-    rating = db.Column(db.Float)
-    earnings = db.Column(db.Integer)
     regions_to_seconds = db.relationship(
         'RegionToSeconds', cascade='delete, delete-orphan', back_populates='courier')
     prev_delivery_end = db.Column(db.Integer)

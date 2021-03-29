@@ -73,6 +73,8 @@ def get_courier(courier_id):
     courier_req = db.session.query(m.Courier).get(courier_id)
     courier_dump = shem.courier_schema.dump(courier_req)
     salary_coefficient = courier_req.salary_coefficient
+    if salary_coefficient == None:
+        salary_coefficient = 0
     delivered = 0
     min_mean_time = None
     regions_to_seconds_dump = shem.regions_to_seconds_shema.dump(
