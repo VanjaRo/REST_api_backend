@@ -8,6 +8,8 @@ RUN apt update -y && apt upgrade -y
 RUN apt install -y python3-pip
 RUN pip3 install -r /app/requirements.txt
 
+RUN chmod +x /app/docker-entrypoint.sh
+
 EXPOSE 8080
 
-CMD ["flask", "db", "init", "&&", "flask", "db", "migrate", "&&", "flask", "db", "migrate", "&&", "python3", "main.py"]
+CMD ["/bin/bash", "docker-entrypoint.sh"]
