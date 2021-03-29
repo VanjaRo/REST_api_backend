@@ -99,7 +99,7 @@ def get_courier(courier_id):
 def patch_couriers(courier_id):
     courier = m.Courier.query.get(courier_id)
     fields = request.json
-    validated = shem.courier_patch_schema.validate(courier)
+    validated = shem.courier_patch_schema.validate(fields)
     if len(validated) != 0:
         print(validated)
         return {}, 400
